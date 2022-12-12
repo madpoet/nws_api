@@ -20,10 +20,7 @@ def gethourlyforecast(lat_long):
     r = getGrid(lat_long)
     if r.ok:
         tjson = r.json()
-        #sgrid = str(tjson['properties']['gridX']) + ',' + str(tjson['properties']['gridY'])
-        #soffice = tjson['properties']['cwa']
-        spath = tjson['properties']['forecastHourly']
-        #'https://api.weather.gov/gridpoints/' + soffice + '/' + sgrid + '/forecast/hourly'
+        spath = r.json()['properties']['forecastHourly']
         return requests.get(spath)
     else:
         print('nothing happened ', r.text) 
