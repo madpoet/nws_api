@@ -12,3 +12,10 @@ Presently, this data can be accessed via latitude and longitude passed as a stri
 Data includes hourly, daily forecasts, weather observations, stations, active weather alerts, and assorted datapoints that can be used to make more advanced queries. 
 
 If a idea may occur to you for a piece of data to extract, feel free to submit and we can add it. Since this is all pretty basic on the code side, grabbing other data should be pretty straightforward
+
+# cdostations.py
+
+## NOAA Climate Data Online API Access
+This is a set of tools to query the CDO databases provided. 
+CDO Database access via station id
+This requires a token. Visit https://www.ncdc.noaa.gov/cdo-web/webservices/v2#gettingStarted to get started and visit https://www.ncdc.noaa.gov/cdo-web/token for a token and then set module.token = noaa API key
