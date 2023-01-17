@@ -18,6 +18,7 @@ Since this is all pretty basic on the code side, grabbing other data should be p
 
 To use try getting a list of forecast/observation stations. These are similar to airport codes, like KSLC which would be the Salt Lake International Airport. Start by querying for stations by latitiude,longitude.
 `import nwsapiaccess as nws`
+
 `nws.liststations('lat,long')`
 
 This will produce a list of stations in that area. Most of the listed stations are observation stations.
@@ -32,6 +33,7 @@ This is a set of tools to query the CDO databases provided.Visit [**Climate Data
 
 CDO Database access via observation station id This requires a token. Visit [**CDO API Key**](https://www.ncdc.noaa.gov/cdo-web/token) to request a token and then set module.token = noaa API key or edit cdostations
 `import cdostations as cs`
+
 `cs.token = your token here`
 
 #### Climate Data Online module usage
@@ -40,12 +42,19 @@ Presently all data is selected by station ID's from GSOM (Monthly Summary) and G
 
 To get started try querying (CDOStations) by zip code to retrieve the local observation stations.
 `import cdostations as cs`
+
+`cs.token = *your token here*`
+
 `cs.listCDOStations(zip code)`
 
 This will return a list of stations within in that zipcode at the python >>> prompt. You can also retrieve a json list of the same data
 
 `import cdostations as cs`
+
+`cs.token = *your token here*`
+
 `r = cd.CDOStations(zip code)`
+
 `for i in r.json()['results']: print(i['id'], '=', i['name'])`
 
 This is basically the same as listCDOStations
