@@ -17,6 +17,7 @@ Data includes hourly, daily forecasts, weather observations stations, active wea
 Since this is all pretty basic on the code side, grabbing other data should be pretty straightforward.
 
 To use try getting a list of forecast/observation stations. These are similar to airport codes, like KSLC which would be the Salt Lake International Airport. Start by querying for stations by latitiude,longitude.
+
 `import nwsapiaccess as nws`
 
 `nws.liststations('lat,long')`
@@ -32,6 +33,7 @@ This is a set of tools to query the CDO databases provided.Visit [**Climate Data
 ### cdostations  
 
 CDO Database access via observation station id This requires a token. Visit [**CDO API Key**](https://www.ncdc.noaa.gov/cdo-web/token) to request a token and then set module.token = noaa API key or edit cdostations
+
 `import cdostations as cs`
 
 `cs.token = your token here`
@@ -41,6 +43,7 @@ CDO Database access via observation station id This requires a token. Visit [**C
 Presently all data is selected by station ID's from GSOM (Monthly Summary) and GHCND (Daily Observations) datasets.
 
 To get started try querying (CDOStations) by zip code to retrieve the local observation stations.
+
 `import cdostations as cs`
 
 `cs.token = *your token here*`
