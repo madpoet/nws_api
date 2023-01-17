@@ -3,11 +3,10 @@
 #This requires a token. Visit https://www.ncdc.noaa.gov/cdo-web/webservices/v2#gettingStarted
 #to get started and visit https://www.ncdc.noaa.gov/cdo-web/token
 #for a token and then set module.token = noaa API key
-# you can also edit this file and add your API token
+#you can also edit this file and add your API token
 #perhaps future versions will include a settings file
-#to include the API taken
-#once it is set, you do not need to worry about passing the header when
-#making requests of the CDO databases 
+#to include the API taken once it is set, you do not need to worry about 
+#passing the header when making requests of the CDO databases 
 ###############################################
 
 import requests
@@ -33,14 +32,17 @@ def getgeneric(spath):
 #Note, this data is only available in one year chunks and you probably
 #want to select a subset of data types, because you will reach the 
 #query limit of 1000 pretty fast.
+#The GSOM data is only available in ten year chunks. The same thing applies
+#as with GHCND queries, it is best to selct a subset of datattypes
 #Pass CDO Station, start and end dates in 'YYYY-MM-DD'
 #format. Optionally include a list of data types (and other things too)
-#by passing '&datatypeid=TMAX' etc. This will be appended
-#to the end of the query.
-#since 
-def getCDOHistory(station, startdate, enddate, stypes):
+#optionally query either the GHCND (Daily) and GSOM (monthly), the default
+#being GHNCD. You can also add to the query by passing
+#datatypeid=TMAX' etc. This will be appended to the end of the query.
+def getCDOHistory(station, startdate, enddate, dataset='GHCND', stypes=''):
     #Start assembling a URL to pass to get history
-    spath = 'https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=GHCND&stationid=' + station
+    spath = 'https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=' + \
+          dataset + '&stationid=' + station
     spath = spath + '&startdate=' + startdate + '&enddate=' + enddate + '&limit=1000'
     if stypes: 
         spath = spath + '&' + stypes 
@@ -67,12 +69,16 @@ def listCDOStations(zip_code):
 def CDOStationInfo(station):
     return getgeneric('https://www.ncei.noaa.gov/cdo-web/api/v2/stations/' + station)
 
-#Get min date of data for a station 
+#Get min date of available station data
 def CDOStationMinDate(station):
-    r = CDOStationInfo(station) 
+    r = CDOStationInfo(station)
     return r.json()['mindate']
 
-#Get min date of date for a station
+#Get max date of available  station data
 def CDOStationMaxDate(station):
-    r = CDOStationInfo(station) 
+    r = CDOStationInfo(station)
     return r.json()['maxdate']
+
+#Return the available datasets for a station
+def CDOStationData(station):
+    return getgeneric('https://www.ncei.noaa.gov/cdo-web/api/v2/datasets?stationid=' + station)

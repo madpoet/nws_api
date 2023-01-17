@@ -58,8 +58,7 @@ def localzone(lat_long):
 #get the local obeservation station (I think, I mean it is the first station returned...)
 def localstation(lat_long):
     r = localstations(lat_long)
-    fzone = r.json()['observationStations'][0]
-    return fzone.rsplit('/', 1)[-1] 
+    return r.json()['features'][0]['properties']['stationIdentifier']
 
 #Get Forecast/Radar grid for current location (x,y)
 def localgrid(lat_long):
