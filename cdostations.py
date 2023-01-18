@@ -28,43 +28,68 @@ def getgeneric(spath):
     else:
         print('unknown error')
         
-#Get daily mesurements up to one year by station from the GHNCD datatset
-#Note, this data is only available in one year chunks and you probably
-#want to select a subset of data types, because you will reach the 
-#query limit of 1000 pretty fast.
-#The GSOM data is only available in ten year chunks. The same thing applies
-#as with GHCND queries, it is best to selct a subset of datattypes
-#Pass CDO Station, start and end dates in 'YYYY-MM-DD'
-#format. Optionally include a list of data types (and other things too)
-#optionally query either the GHCND (Daily) and GSOM (monthly), the default
-#being GHNCD. You can also add to the query by passing
-#datatypeid=TMAX' etc. This will be appended to the end of the query.
-def getCDOHistory(station, startdate, enddate, dataset='GHCND', stypes=''):
+# Get CDO data by passing location codes FIPS or ZIP codes (FIPS:56 or ZIP:90210)
+# pass a start date and end date as yyyy-mm-dd format
+# Optionally append additional query parameters,
+# for example 'datatypeid=TMAX&units=metric'
+# Optionally pass the dataset you want to query, by default this is GHCND
+# The three datasets are generally GHCND (DAILY), GSOM (monthly), & GSOY (yearly)
+# TODO: currently the GHCND only allows for lrss than one year of
+# data to be retrieved and then a limit 1000 records.
+# The GSOM and GSOY sets only allow for less than ten years.
+# Future versions should include error checking for date constraints
+def getCDOLocationHistory(location, startdate, enddate, stypes='', dataset='GHCND'):
     #Start assembling a URL to pass to get history
     spath = 'https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=' + \
-          dataset + '&stationid=' + station
-    spath = spath + '&startdate=' + startdate + '&enddate=' + enddate + '&limit=1000'
-    if stypes: 
-        spath = spath + '&' + stypes 
+        dataset + '&locationid=' + location
+    spath = spath + '&startdate=' + startdate + \
+        '&enddate=' + enddate + '&limit=1000'
+    if stypes:
+        spath = spath + '&' + stypes
+    print(spath)
     return getgeneric(spath)
 
-# Pass the zip code and get a JSON reply of CDO stations in the area  
-def CDOStations(zip_code):
-    r = getgeneric('https://www.ncei.noaa.gov/cdo-web/api/v2/stations?locationid=ZIP:' + str(zip_code))
+# Get CDO data by passing a station id
+# pass a start date and end date as yyyy-mm-dd forma
+# Optionally append additional query parameters,
+# for example 'datatypeid=TMAX&units=metric'
+# Optionally pass the dataset you want to query, by default this is the GHCND
+# The three datasets are generally GHCND (DAILY), GSOM(monthly)), & GSOY (yearly)
+# TODO: currently the GHCND only allows for lrss than one year of data to be
+# retrieved and then a limit 1000 records. The GSOM and GSOY sets only allow
+# for less than ten yearas.
+# Future versions should include error checking for date constraints
+def getCDOStationHistory(station, startdate, enddate, stypes='', dataset='GHCND'):
+    #Start assembling a URL to pass to get history
+    spath = 'https://www.ncei.noaa.gov/cdo-web/api/v2/data?datasetid=' + \
+        dataset + '&stationid=' + station
+    spath = spath + '&startdate=' + startdate + \
+        '&enddate=' + enddate + '&limit=1000'
+    if stypes:
+        spath = spath + '&' + stypes
+    #print(spath)
+    return getgeneric(spath)
+
+# Pass the location code ('ZIP:90210' or 'FIPS:56042', etc.)
+# and get a JSON reply of CDO stations in the area
+def CDOStations(loc_code):
+    r = getgeneric('https://www.ncei.noaa.gov/cdo-web/api/v2/stations?locationid=' + loc_code)
     if not r:
-        print('no stations found. Check zip code')
+        print('no stations found. Check location code')
     else:
         return r
 
-#Throw up a list of CDO stations on the screen
-def listCDOStations(zip_code):
-    rst = CDOStations(zip_code)
+# Display a list of stations
+# Pass the location code ('ZIP:90210' or 'FIPS:56042', etc.)
+# and get a JSON reply of CDO stations in the area
+def listCDOStations(loc_code):
+    rst = CDOStations(loc_code)
     if not rst:
         print('unknown error')
     else:
         for i in rst.json()['results']:
             print(i['id'], '=', i['name'])
-                   
+
 #Get CDO Station info
 def CDOStationInfo(station):
     return getgeneric('https://www.ncei.noaa.gov/cdo-web/api/v2/stations/' + station)
@@ -82,3 +107,8 @@ def CDOStationMaxDate(station):
 #Return the available datasets for a station
 def CDOStationData(station):
     return getgeneric('https://www.ncei.noaa.gov/cdo-web/api/v2/datasets?stationid=' + station)
+
+#Return the station name
+def CDOStationName(station):
+    r = CDOStationInfo(station)
+    return r.json()['name']
