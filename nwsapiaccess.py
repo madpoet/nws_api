@@ -26,8 +26,20 @@ def gethourlyforecast(lat_long):
         print('nothing happened ', r.text) 
 
 #Return forecast grid json request from lat/long
-def getGrid(lat_long):
-    return requests.get('https://api.weather.gov/points/' + lat_long)
+#error checking here 
+def getGrid(slocation):
+    try:
+        r = requests.get('https://api.weather.gov/points/' + slocation)
+        #return r
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        print('HTTP CONNECION ERROR', r.text)
+        print(e)
+    except requests.exceptions.RequestException as e:
+        print('REQUEST EXCEPTION:', r.text)
+        print(e)
+    
+    return r
 
 #get observation stations by lat/long
 def localstations(lat_long):
@@ -68,9 +80,10 @@ def localgrid(lat_long):
 #retrieve NOAA Forecast API observed history as pandas dataset
 #NOTE: There is a limit of around six days
 #if you need more, dip into the GHNCD NOAA API data
-# to use pass the station ID, start date and end date 
+# to use pass the lat long, start date and end date 
 # in YYYY-MM=DDTHH:MM:SSZ format  
-def getdaily(station, startdate, enddate):
+def getdaily(lat_long, startdate, enddate):
+    station = localstation(lat_long)
     r = requests.get('https://api.weather.gov/stations/' + station + \
         '/observations?start=' + startdate + \
             '&end=' + enddate + '&limit=500')

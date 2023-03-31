@@ -42,14 +42,13 @@ CDO Database access via observation station id This requires a token. Visit [**C
 
 Presently all data is selected by station ID's from GSOM (Monthly Summary) and GHCND (Daily Observations) datasets.
 
-To get started try querying (CDOStations) by location code to retrieve the local observation stations. These locations code examples are FIPS:56 or ZIP:90210. For more information on available location queries visit https://www.ncei.noaa.gov/cdo-web/api/v2/locationcategories
-
+To get started try querying (CDOStations) by zip code to retrieve the local observation stations.
 
 `import cdostations as cs`
 
 `cs.token = *your token here*`
 
-`cs.listCDOStations(location)`
+`cs.listCDOStations(zip code)`
 
 This will return a list of stations within in that zipcode at the python >>> prompt. You can also retrieve a json list of the same data
 
@@ -57,7 +56,7 @@ This will return a list of stations within in that zipcode at the python >>> pro
 
 `cs.token = *your token here*`
 
-`r = cd.CDOStations(location)`
+`r = cd.CDOStations(zip code)`
 
 `for i in r.json()['results']: print(i['id'], '=', i['name'])`
 
@@ -68,4 +67,6 @@ After you have a list stations
 
 ##### Note
 
-Version 001: this code is very basic, with limited error checking. Hopefully I can rectify that in the next update
+Version 001: *this code is very basic, with limited error checking. Hopefully I can rectify that in the next update*
+
+Version 002: *Added error checking to getGrid method. This is the foundational request that selection of additional datapoints*
