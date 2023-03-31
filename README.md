@@ -69,4 +69,4 @@ After you have a list stations
 
 Version 001: *this code is very basic, with limited error checking. Hopefully I can rectify that in the next update*
 
-Version 002: *Added error checking to getGrid method. This is the foundational request that selection of additional datapoints*
+Version 002: *Added error checking to getGrid method. This is the foundational request that selection of additional datapoints usin nwsaccess.py*
