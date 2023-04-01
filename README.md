@@ -63,7 +63,7 @@ This will return a list of stations within in that zipcode at the python >>> pro
 This is basically the same as listCDOStations
 *Note that all CDO requests, the json record path always is found under 'results'*
 
-After you have a list stations
+After you have a list of stations, you can further query based on the station name.
 
 ##### Note
 
