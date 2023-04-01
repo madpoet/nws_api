@@ -1,6 +1,7 @@
 ###############################################
 #CDO Database access via station id
-#This requires a token. Visit https://www.ncdc.noaa.gov/cdo-web/webservices/v2#gettingStarted
+#This requires a token. 
+#Visit https://www.ncdc.noaa.gov/cdo-web/webservices/v2#gettingStarted
 #to get started and visit https://www.ncdc.noaa.gov/cdo-web/token
 #for a token and then set module.token = noaa API key
 #you can also edit this file and add your API token
@@ -14,19 +15,22 @@ import json
 token = 'get a token'
 
 #Function to process CDO requests
+#for more information on the CDO specifications visit:
+#https://www.ncdc.noaa.gov/cdo-web/webservices/v2#gettingStarted
+#Return a json request from NOAA CDO database
 def getgeneric(spath):
-    r=''
-    r = requests.get(spath, headers={'token':token})
-    if r:
-        #return something
-        if r.ok == True:
-            if len(r.text) == 2:
-                print('empty array')
-                return r
-            else:
-                return r
-    else:
-        print('unknown error')
+    #print(spath)
+    try:
+        r = requests.get(spath, headers={'token':token})
+    except requests.exceptions.HTTPError as e:
+        print('HTTP CONNECION ERROR', r.text)
+        print(e)
+    except requests.exceptions.RequestException as e:
+        print('REQUEST EXCEPTION:', r.text)
+        print(e)
+    except:
+        print('AN UNKNOWN ERROR OCCURED')
+    return r
         
 # Get CDO data by passing location codes FIPS or ZIP codes (FIPS:56 or ZIP:90210)
 # pass a start date and end date as yyyy-mm-dd format
