@@ -13,23 +13,11 @@ def activealert(szone):
 #https://www.weather.gov/documentation/services-web-api
 #for details on different types of queries 
 #************************************************************************ 
-#Get the hourly forecast for 7 days  by passing the lat/long as a string
-#currently returns as a json request
-def gethourlyforecast(lat_long):
-    #look up grid and reporting office
-    r = getGrid(lat_long)
-    if r.ok:
-        tjson = r.json()
-        spath = r.json()['properties']['forecastHourly']
-        return requests.get(spath)
-    else:
-        print('nothing happened ', r.text) 
 
-#Return forecast grid json request from lat/long
-#error checking here 
-def getGrid(slocation):
+#Return forecast grid from lat/long
+def getGrid(lat_long):
     try:
-        r = requests.get('https://api.weather.gov/points/' + slocation)
+        r = requests.get('https://api.weather.gov/points/' + lat_long)
         #return r
         r.raise_for_status()
         return r
@@ -41,6 +29,50 @@ def getGrid(slocation):
         print(e)
     except:
         "an unaccounted for error occurred"
+
+#Get the hourly forecast for 7 days  by passing the lat/long as a string
+#currently returns as a json request
+def gethourlyforecast(lat_long):
+    #look up grid and reporting office
+    r = getGrid(lat_long)
+    if r.ok:
+        spath = r.json()['properties']['forecastHourly']
+        try:
+            r = requests.get(spath)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.HTTPError as e:
+            print('HTTP CONNECION ERROR', r.text)
+            print(e)
+        except requests.exceptions.RequestException as e:
+            print('REQUEST EXCEPTION:', r.text)
+            print(e)
+        except:
+            print('an unaccounted for error occurred')
+    else:
+        print('un unexpected error has happened')
+        
+#Get daily forecast for the next seven days
+#by passing lat and long (same as gethourlyforecast)
+def getforecast(lat_long):
+    #look up grid and reporting office
+    r = getGrid(lat_long)
+    if r.ok:
+        spath = r.json()['properties']['forecast']
+        try:
+            r = requests.get(spath)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.HTTPError as e:
+            print('HTTP CONNECION ERROR', r.text)
+            print(e)
+        except requests.exceptions.RequestException as e:
+            print('REQUEST EXCEPTION:', r.text)
+            print(e)
+        except:
+            print('an unaccounted for error occurred')
+    else:
+        print('un unexpected error has happened')
 
 #get observation stations by lat/long
 def localstations(lat_long):
