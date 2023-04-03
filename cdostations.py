@@ -22,6 +22,8 @@ def getgeneric(spath):
     #print(spath)
     try:
         r = requests.get(spath, headers={'token':token})
+        r.raise_for_status()
+        return r
     except requests.exceptions.HTTPError as e:
         print('HTTP CONNECION ERROR', r.text)
         print(e)
@@ -29,8 +31,7 @@ def getgeneric(spath):
         print('REQUEST EXCEPTION:', r.text)
         print(e)
     except:
-        print('AN UNKNOWN ERROR OCCURED')
-    return r
+        print('AN UNKNOWN ERROR OCCURED: ', r.text)
         
 # Get CDO data by passing location codes FIPS or ZIP codes (FIPS:56 or ZIP:90210)
 # pass a start date and end date as yyyy-mm-dd format

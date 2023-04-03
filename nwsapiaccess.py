@@ -32,14 +32,15 @@ def getGrid(slocation):
         r = requests.get('https://api.weather.gov/points/' + slocation)
         #return r
         r.raise_for_status()
+        return r
     except requests.exceptions.HTTPError as e:
         print('HTTP CONNECION ERROR', r.text)
         print(e)
     except requests.exceptions.RequestException as e:
         print('REQUEST EXCEPTION:', r.text)
         print(e)
-    
-    return r
+    except:
+        "an unaccounted for error occurred"
 
 #get observation stations by lat/long
 def localstations(lat_long):
@@ -91,3 +92,41 @@ def getdaily(lat_long, startdate, enddate):
        return r
     else:
         print("error conecting: " + r.text)
+
+#NOTE: The following allow for querying based on the station 
+# name, eg KLAX
+
+#Pass a forecast station (e.g. KLAX) and
+# retrieve basic information. This data may be less
+# complete than the getGrid method.
+def stationGrid(station):
+    try:
+        r = requests.get('https://api.weather.gov/stations/' + station)
+        r.raise_for_status()
+        return r
+    except requests.exceptions.HTTPError as e:
+        print('HTTP CONNECION ERROR', r.text)
+        print(e)
+    except requests.exceptions.RequestException as e:
+        print('REQUEST EXCEPTION:', r.text)
+        print(e)
+    except:
+        print('an unaccounted for error occurred')
+
+#Pass a forecast station (e.g. KLAX) and
+# retrieve the stations latitude
+def stationLat(station):
+    r = stationGrid(station)
+    coord = r.json()['geometry']['coordinates']
+    return coord[1]
+#Pass a forecast station (e.g. KLAX) and
+# retrieve the stations latitude
+def stationLong(station):
+    r = stationGrid(station)
+    coord = r.json()['geometry']['coordinates']
+    return coord[0]
+#Pass a forecast station (e.g. KLAX) and
+# retrieve the longitude and latitude as a list
+def stationLatLong(station):
+    r = stationGrid(station)
+    return r.json()['geometry']['coordinates']
