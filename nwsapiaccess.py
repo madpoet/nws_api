@@ -74,6 +74,28 @@ def getforecast(lat_long):
     else:
         print('un unexpected error has happened')
 
+#retrieve NOAA Forecast API observed history as pandas dataset
+#NOTE: There is a limit of around six days
+#if you need more, dip into the GHNCD NOAA API data
+# to use pass the lat long, start date and end date 
+# in YYYY-MM=DDTHH:MM:SSZ format  
+def getdaily(lat_long, startdate, enddate):
+    station = localstation(lat_long)
+    try:
+        r = requests.get('https://api.weather.gov/stations/' + station + \
+        '/observations?start=' + startdate + \
+            '&end=' + enddate + '&limit=500')
+        r.raise_for_status()
+        return r
+    except requests.exceptions.HTTPError as e:
+            print('HTTP CONNECION ERROR', r.text)
+            print(e)
+    except requests.exceptions.RequestException as e:
+            print('REQUEST EXCEPTION:', r.text)
+            print(e)
+    except:
+            print('an unaccounted for error occurred')
+
 #get observation stations by lat/long
 def localstations(lat_long):
     r = getGrid(lat_long)
@@ -110,20 +132,7 @@ def localgrid(lat_long):
     r = getGrid(lat_long)
     return str(r.json()['properties']['gridX']) + ',' + str(r.json()['properties']['gridY'])
 
-#retrieve NOAA Forecast API observed history as pandas dataset
-#NOTE: There is a limit of around six days
-#if you need more, dip into the GHNCD NOAA API data
-# to use pass the lat long, start date and end date 
-# in YYYY-MM=DDTHH:MM:SSZ format  
-def getdaily(lat_long, startdate, enddate):
-    station = localstation(lat_long)
-    r = requests.get('https://api.weather.gov/stations/' + station + \
-        '/observations?start=' + startdate + \
-            '&end=' + enddate + '&limit=500')
-    if r.ok == True:
-       return r
-    else:
-        print("error conecting: " + r.text)
+
 
 #NOTE: The following allow for querying based on the station 
 # name, eg KLAX
