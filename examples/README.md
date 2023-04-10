@@ -7,7 +7,7 @@ This is an example of making two queries, the first is to get the forecast grid 
 It returns any current weather alert for that area and displays it.
 
 ## cTemp2.py
-This is an example of querying the National Weather Service Forecast API for the current temperature. Because a new observation forecast record can have a null temperature, the code includes a way of retrieving the last empty temp field. 
+This is an example of querying the National Weather Service Forecast API for the current temperature. Because a new observation forecast value can be null, the code includes a way of retrieving the last empty temp field. 
 
 It also retrieves the complete observation record associated that timestamp. This code could bne massively streamlined, but is presented as a sort of scratch pad to explore some of the data.
 
