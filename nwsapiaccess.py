@@ -96,6 +96,30 @@ def getdaily(lat_long, startdate, enddate):
     except:
             print('an unaccounted for error occurred')
 
+#Return the low forecast temperature and time as list
+def forecastlow(sloc):
+    r = gethourlyforecast(sloc)
+    ctemp = forecasthigh(sloc)
+    for i in r.json()['properties']['periods']:
+        itemp =  float(i['temperature'])
+        if itemp < ctemp:
+            ts = (i['startTime'])
+            ctemp = itemp
+
+    return ([ctemp, ts])
+
+#Return the high forecast temperature and time as list
+def forecasthigh(sloc):
+    r = gethourlyforecast(sloc)
+    ctemp = 0.0
+    for i in r.json()['properties']['periods']:
+        itemp =  float(i['temperature'])
+        if itemp > ctemp:
+            ts = (i['startTime'])
+            ctemp = itemp
+
+    return ([ctemp, ts])
+
 #get observation stations by lat/long
 def localstations(lat_long):
     r = getGrid(lat_long)
@@ -166,8 +190,16 @@ def stationLong(station):
     r = stationGrid(station)
     coord = r.json()['geometry']['coordinates']
     return coord[0]
+
 #Pass a forecast station (e.g. KLAX) and
 # retrieve the longitude and latitude as a list
 def stationLatLong(station):
     r = stationGrid(station)
-    return r.json()['geometry']['coordinates']
+    #flip the values, since they are listed as Long/Lat
+    tmp = [r.json()['geometry']['coordinates'][1], r.json()['geometry']['coordinates'][0]]
+    return tmp
+
+#Get the time zone for a station
+def stationTZ(station):
+    r = stationGrid(station)
+    return r.json()['properties']['timeZone']
